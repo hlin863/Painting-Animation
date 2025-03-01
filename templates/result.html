@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Generated Talking Face</title>
+</head>
+<body>
+    <h2>Generated Talking Face Video</h2>
+    <video controls width="640">
+        <source src="{{ url_for('static', filename=video_folder + '/' + video_file) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <br><br>
+    <a href="{{ url_for('download_file', filepath=video_folder + '/' + video_file) }}">Download Video</a>
+    <br><br>
+    <a href="{{ url_for('index') }}">Back to Upload</a>
+</body>
+</html>
