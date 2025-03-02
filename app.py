@@ -70,6 +70,7 @@ def download_file(filepath):
 
 @app.route('/outputs/<path:filepath>')
 def serve_video(filepath):
+    print(f"Serving video file: {filepath}")
     return send_file(filepath, mimetype='video/mp4')
 
 if __name__ == '__main__':
