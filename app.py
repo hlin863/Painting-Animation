@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file, redirect, url_for,
 import os
 import subprocess
 from werkzeug.utils import secure_filename, safe_join
+from pydub import AudioSegment
 
 app = Flask(__name__)
 
@@ -77,7 +78,7 @@ def index():
             if output_video:
 
                 convert_video_to_web_format_in_place(video_output_dir, output_video)
-                
+
                 return redirect(url_for('result', video_folder=video_output_dir, video_file=output_video))
 
     return render_template('index.html')
@@ -97,6 +98,29 @@ def download_file(filepath):
 def serve_video(filepath):
     print(f"Serving video file: {filepath}")
     return send_file(filepath, mimetype='video/mp4')
+
+@app.route('/crop_audio', methods=['GET', 'POST'])
+def crop_audio():
+    if request.method == 'POST':
+        audio = request.files['audio']
+        start_time = float(request.form['start_time'])
+        end_time = float(request.form['end_time'])
+
+        if audio:
+            audio_filename = secure_filename(audio.filename)
+            audio_path = os.path.join(UPLOAD_FOLDER, audio_filename)
+            cropped_path = os.path.join(UPLOAD_FOLDER, f"cropped_{audio_filename}")
+
+            audio.save(audio_path)
+
+            # Crop the audio using pydub
+            sound = AudioSegment.from_file(audio_path)
+            cropped_sound = sound[start_time * 1000:end_time * 1000]  # pydub works in milliseconds
+            cropped_sound.export(cropped_path, format="wav")
+
+            return send_file(cropped_path, as_attachment=True)
+
+    return render_template('crop_audio.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

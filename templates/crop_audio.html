@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Crop Audio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f9fc;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            margin: 8px 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Crop Audio File</h2>
+    <form method="post" enctype="multipart/form-data">
+        <label>Upload Audio:</label>
+        <input type="file" name="audio" required>
+
+        <label>Start Time (seconds):</label>
+        <input type="number" name="start_time" step="0.1" required>
+
+        <label>End Time (seconds):</label>
+        <input type="number" name="end_time" step="0.1" required>
+
+        <button type="submit">Crop & Download</button>
+    </form>
+</div>
+
+</body>
+</html>

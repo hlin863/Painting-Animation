@@ -3,6 +3,40 @@
 <head>
     <title>🎥 SadTalker - Upload Your Fun Files! 🎵</title>
     <style>
+        .button-panel {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-panel button {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-panel button[type="submit"] {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .button-panel button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .button-panel button[type="button"] {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .button-panel button[type="button"]:hover {
+            background-color: #5a6268;
+        }
         /* Basic page styling */
         body {
             font-family: 'Arial', sans-serif;
@@ -87,7 +121,10 @@
         <label for="audio">🎙️ Upload Audio (Speech)</label>
         <input type="file" name="audio" required>
 
-        <button type="submit">✨ Generate Talking Face ✨</button>
+        <div class="button-panel">
+            <button type="submit">✨ Generate Talking Face ✨</button>
+            <button type="button" onclick="window.location.href='{{ url_for('crop_audio') }}'">✂️ Crop Audio ✂️</button>
+        </div>
     </form>
 
     <div class="footer">
