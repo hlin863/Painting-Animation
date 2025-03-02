@@ -88,7 +88,7 @@ def index():
 
 async def generate_tts(text, output_path):
     voice = "zh-CN-YunyangNeural"  # Male Mandarin voice
-    communicate = edge_tts.Communicate(text, voice)
+    communicate = edge_tts.Communicate(text, voice, rate='-25%')
     await communicate.save(output_path)
 
 def generate_talking_face_from_text(image_path, text, output_path):
