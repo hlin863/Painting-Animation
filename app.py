@@ -3,6 +3,8 @@ import os
 import subprocess
 from werkzeug.utils import secure_filename, safe_join
 from pydub import AudioSegment
+import asyncio
+import edge_tts
 
 app = Flask(__name__)
 
@@ -84,7 +86,10 @@ def index():
     return render_template('index.html')
 
 
-from gtts import gTTS
+async def generate_tts(text, output_path):
+    voice = "zh-CN-YunyangNeural"  # Male Mandarin voice
+    communicate = edge_tts.Communicate(text, voice)
+    await communicate.save(output_path)
 
 def generate_talking_face_from_text(image_path, text, output_path):
     """
@@ -95,10 +100,10 @@ def generate_talking_face_from_text(image_path, text, output_path):
     # Step 1 - Convert text to speech
     tts_audio_path = os.path.join(output_path, "generated_speech.wav")
 
-    tts = gTTS(text=text, lang="zh")  # Change 'zh' to 'en' for English or other languages if needed
-    tts.save(tts_audio_path)
+    # Use EdgeTTS to generate male voice
+    asyncio.run(generate_tts(text, tts_audio_path))
 
-    # Step 2 - Run SadTalker with image + generated speech
+    # Use SadTalker to generate video
     generate_talking_face(image_path, tts_audio_path, output_path)
 
 @app.route('/text_talking_face', methods=['POST'])
