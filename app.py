@@ -22,6 +22,28 @@ def generate_talking_face(image_path, audio_path, output_path):
     ]
     subprocess.run(command, cwd='SadTalker')
 
+import shutil
+
+def convert_video_to_web_format_in_place(video_folder, video_file):
+    """Convert video to H.264 + AAC (browser-compatible) and overwrite the original file."""
+    input_path = os.path.join(video_folder, video_file)
+    temp_path = os.path.join(video_folder, "temp_" + video_file)
+
+    command = [
+        'ffmpeg',
+        '-i', input_path,
+        '-c:v', 'libx264',
+        '-c:a', 'aac',
+        '-strict', 'experimental',
+        temp_path
+    ]
+
+    subprocess.run(command, check=True)
+
+    # Replace the original file with the converted file
+    shutil.move(temp_path, input_path)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -53,6 +75,9 @@ def index():
                     break
 
             if output_video:
+
+                convert_video_to_web_format_in_place(video_output_dir, output_video)
+                
                 return redirect(url_for('result', video_folder=video_output_dir, video_file=output_video))
 
     return render_template('index.html')
