@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
+from flask import Flask, render_template, request, send_file, redirect, url_for, abort
 import os
 import subprocess
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename, safe_join
 
 app = Flask(__name__)
 
@@ -67,6 +67,10 @@ def result():
 @app.route('/download/<path:filepath>')
 def download_file(filepath):
     return send_file(filepath, as_attachment=True)
+
+@app.route('/outputs/<path:filepath>')
+def serve_video(filepath):
+    return send_file(filepath, mimetype='video/mp4')
 
 if __name__ == '__main__':
     app.run(debug=True)
