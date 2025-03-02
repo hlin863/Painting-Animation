@@ -37,7 +37,7 @@
         .button-panel button[type="button"]:hover {
             background-color: #5a6268;
         }
-        /* Basic page styling */
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f7f9fc;
@@ -57,6 +57,8 @@
             width: 100%;
             text-align: center;
             box-sizing: border-box;
+            overflow-y: auto;
+            max-height: 90vh;
         }
 
         h2 {
@@ -72,13 +74,12 @@
             font-size: 15px;
         }
 
-        input[type="file"] {
+        input[type="file"], input[type="text"], input[type="number"] {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 6px;
             background-color: #f8f8f8;
-            cursor: pointer;
         }
 
         button {
@@ -90,7 +91,7 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
             transition: background-color 0.3s;
         }
 
@@ -106,6 +107,12 @@
 
         .emoji {
             font-size: 18px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ddd;
         }
     </style>
 </head>
@@ -125,6 +132,19 @@
             <button type="submit">✨ Generate Talking Face ✨</button>
             <button type="button" onclick="window.location.href='{{ url_for('crop_audio') }}'">✂️ Crop Audio ✂️</button>
         </div>
+    </form>
+
+    <hr>
+
+    <h2><span class="emoji">🖼️</span> Text on Image Video <span class="emoji">🎥</span></h2>
+    <form action="{{ url_for('text_talking_face') }}" method="post" enctype="multipart/form-data">
+        <label>🖼️ Upload Image (Face)</label>
+        <input type="file" name="image" required>
+    
+        <label>📝 Enter Text to Speak</label>
+        <input type="text" name="text" placeholder="Enter text to generate speech" required>
+    
+        <button type="submit">🗣️ Generate Talking Face from Text</button>
     </form>
 
     <div class="footer">

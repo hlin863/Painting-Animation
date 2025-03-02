@@ -84,6 +84,58 @@ def index():
     return render_template('index.html')
 
 
+from gtts import gTTS
+
+def generate_talking_face_from_text(image_path, text, output_path):
+    """
+    Generate talking face video from an image and input text.
+    - Uses gTTS for text-to-speech.
+    - Uses SadTalker for face animation.
+    """
+    # Step 1 - Convert text to speech
+    tts_audio_path = os.path.join(output_path, "generated_speech.wav")
+
+    tts = gTTS(text=text, lang="zh")  # Change 'zh' to 'en' for English or other languages if needed
+    tts.save(tts_audio_path)
+
+    # Step 2 - Run SadTalker with image + generated speech
+    generate_talking_face(image_path, tts_audio_path, output_path)
+
+@app.route('/text_talking_face', methods=['POST'])
+def text_talking_face():
+    if request.method == 'POST':
+        image = request.files['image']
+        text = request.form.get('text', '')
+
+        if not text:
+            return "Text input is required.", 400
+
+        if image:
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(UPLOAD_FOLDER, image_filename)
+            image.save(image_path)
+
+            video_output_dir = os.path.join(OUTPUT_FOLDER, 'text_talking_faces', image_filename.split('.')[0])
+            os.makedirs(video_output_dir, exist_ok=True)
+
+            # Generate talking face from image + text
+            generate_talking_face_from_text(image_path, text, video_output_dir)
+
+            # Locate the resulting video
+            output_video = None
+            for file in os.listdir(video_output_dir):
+                if file.endswith('.mp4'):
+                    output_video = file
+                    break
+
+            if output_video:
+                # Convert video if needed
+                convert_video_to_web_format_in_place(video_output_dir, output_video)
+
+                return send_file(os.path.join(video_output_dir, output_video), as_attachment=True)
+
+    return redirect(url_for('index'))
+
 @app.route('/result')
 def result():
     video_folder = request.args.get('video_folder')
