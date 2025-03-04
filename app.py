@@ -196,5 +196,55 @@ def crop_audio():
 
     return render_template('crop_audio.html')
 
+@app.route('/reanimate', methods=['GET', 'POST'])
+def reanimate():
+    if request.method == 'POST':
+        image = request.files.get('image')
+        audio = request.files.get('audio')
+        text = request.form.get('text')
+
+        if not image:
+            return "Image is required.", 400
+
+        # Save the uploaded image
+        image_filename = secure_filename(image.filename)
+        image_path = os.path.join(UPLOAD_FOLDER, image_filename)
+        image.save(image_path)
+
+        # Create output folder for the new video
+        video_output_dir = os.path.join(OUTPUT_FOLDER, image_filename.split('.')[0])
+        os.makedirs(video_output_dir, exist_ok=True)
+
+        if audio:
+            # Save uploaded audio
+            audio_path = os.path.join(UPLOAD_FOLDER, secure_filename(audio.filename))
+            audio.save(audio_path)
+
+            # Generate talking face with uploaded audio
+            generate_talking_face(image_path, audio_path, video_output_dir)
+
+        elif text:
+            # Convert text to speech
+            tts_audio_path = os.path.join(video_output_dir, "generated_speech.wav")
+            asyncio.run(generate_tts(text, tts_audio_path))
+
+            # Generate talking face with TTS audio
+            generate_talking_face(image_path, tts_audio_path, video_output_dir)
+
+        # Find the new video
+        output_video = None
+        for file in os.listdir(video_output_dir):
+            if file.endswith('.mp4'):
+                output_video = file
+                break
+
+        if output_video:
+            convert_video_to_web_format_in_place(video_output_dir, output_video)
+            return redirect(url_for('result', video_folder=video_output_dir, video_file=output_video))
+
+        return "Failed to generate talking face.", 500
+
+    return render_template('reanimate.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

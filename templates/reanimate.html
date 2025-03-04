@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reanimate - Generate Talking Face</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            width: 500px;
+            text-align: center;
+        }
+
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Upload New Image to Generate Talking Face</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <label>🖼️ Upload New Image (Face):</label>
+        <input type="file" name="image" accept="image/*" required>
+
+        <hr>
+
+        <label>🎙️ Upload Audio File (Optional):</label>
+        <input type="file" name="audio">
+
+        <label>📝 Or Enter Text (Will Convert to Speech):</label>
+        <input type="text" name="text">
+
+        <button type="submit">✨ Generate Talking Face</button>
+    </form>
+
+    <div class="footer">
+        🤖 Powered by SadTalker - Reanimate with Fun!
+    </div>
+
+    <div>
+        <a href="{{ url_for('gallery') }}">📸 View Gallery</a> |
+        <a href="{{ url_for('index') }}">🏠 Home</a>
+    </div>
+</div>
+
+</body>
+</html>
