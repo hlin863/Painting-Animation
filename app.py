@@ -46,6 +46,23 @@ def convert_video_to_web_format_in_place(video_folder, video_file):
     # Replace the original file with the converted file
     shutil.move(temp_path, input_path)
 
+@app.route('/gallery')
+def gallery():
+    video_data = []
+    gallery_path = r"C:\Users\haoch\Desktop\Painting-Animation\outputs"
+    for root, _, files in os.walk(gallery_path):
+        for file in files:
+            if file.endswith('.mp4'):
+                
+                rel_folder = os.path.relpath(root, gallery_path).replace('\\', '/')
+        
+                full_path = os.path.join(root, file)
+                video_data.append({
+                    'folder': rel_folder,
+                    'file': file,
+                    'full_path': full_path  # Optional, for internal logs
+                })
+    return render_template('gallery.html', videos=video_data)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
