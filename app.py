@@ -21,7 +21,9 @@ def generate_talking_face(image_path, audio_path, output_path):
         '--driven_audio', audio_path,
         '--source_image', image_path,
         '--preprocess', 'full',
-        '--result_dir', output_path
+        '--result_dir', output_path,
+        '--still',
+        '--enhancer', 'gfpgan',
     ]
     subprocess.run(command, cwd='SadTalker')
 
