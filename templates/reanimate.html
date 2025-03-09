@@ -22,10 +22,14 @@
             text-align: center;
         }
 
-        input, button {
+        input, button, select {
             width: 100%;
             margin: 10px 0;
             padding: 10px;
+        }
+
+        input[type="text"] {
+            width: 90%; /* Reduced width to fit better */
         }
 
         button {
@@ -63,6 +67,14 @@
 
         <label>📝 Or Enter Text (Will Convert to Speech):</label>
         <input type="text" name="text">
+
+        <label>🗣️ Select Voice:</label>
+        <select name="voice">
+            <option value="zh-CN-YunyangNeural">Mandarin (Male)</option>
+            <option value="zh-CN-XiaoxiaoNeural">Mandarin (Female)</option>
+            <option value="en-US-GuyNeural">English (Male)</option>
+            <option value="en-US-JennyNeural">English (Female)</option>
+        </select>
 
         <button type="submit">✨ Generate Talking Face</button>
     </form>

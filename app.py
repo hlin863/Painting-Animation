@@ -105,8 +105,11 @@ def index():
     return render_template('index.html')
 
 
-async def generate_tts(text, output_path):
-    voice = "zh-CN-YunyangNeural"  # Male Mandarin voice
+async def generate_tts(text, output_path, voice="zh-CN-YunyangNeural"):
+    """
+    Generate text-to-speech using EdgeTTS with a selected voice.
+    Saves the output audio file.
+    """
     communicate = edge_tts.Communicate(text, voice, rate='-25%')
     await communicate.save(output_path)
 
@@ -203,7 +206,8 @@ def reanimate():
     if request.method == 'POST':
         image = request.files.get('image')
         audio = request.files.get('audio')
-        text = request.form.get('text')
+        text = request.form.get('text', '').strip()
+        voice = request.form.get('voice', "zh-CN-YunyangNeural")
 
         if not image:
             return "Image is required.", 400
@@ -222,16 +226,17 @@ def reanimate():
             audio_path = os.path.join(UPLOAD_FOLDER, secure_filename(audio.filename))
             audio.save(audio_path)
 
-            # Generate talking face with uploaded audio
-            generate_talking_face(image_path, audio_path, video_output_dir)
-
         elif text:
-            # Convert text to speech
-            tts_audio_path = os.path.join(video_output_dir, "generated_speech.wav")
-            asyncio.run(generate_tts(text, tts_audio_path))
-
             # Generate talking face with TTS audio
-            generate_talking_face(image_path, tts_audio_path, video_output_dir)
+            # Generate TTS audio from text using the selected voice
+            tts_audio_path = os.path.join(video_output_dir, "generated_speech.wav")
+            asyncio.run(generate_tts(text, tts_audio_path, voice))
+            audio_path = tts_audio_path
+            print(f"Generated TTS audio at: {tts_audio_path}")
+        else:
+            return "Error: Either an audio file or text input is required.", 400
+        
+        generate_talking_face(image_path, audio_path, video_output_dir)
 
         # Find the new video
         output_video = None
