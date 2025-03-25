@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename, safe_join
 from pydub import AudioSegment
 import asyncio
 import edge_tts
+import sys
 
 app = Flask(__name__)
 
@@ -13,6 +14,13 @@ OUTPUT_FOLDER = os.path.join(os.getcwd(), 'outputs')
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+# Absolute path to SadTalker root folder
+SADTALKER_PATH = os.path.abspath(os.path.join(os.getcwd(), 'SadTalker'))
+
+# Add SadTalker root to the Python path
+if SADTALKER_PATH not in sys.path:
+    sys.path.insert(0, SADTALKER_PATH)
 
 # SadTalker command runner
 def generate_talking_face(image_path, audio_path, output_path):
@@ -80,6 +88,8 @@ def index():
             audio_path = os.path.join(UPLOAD_FOLDER, audio_filename)
 
             image.save(image_path)
+            print("Trying to save audio to:", audio_path)
+            print("File exists already?", os.path.exists(audio_path))
             audio.save(audio_path)
 
             # Output directory (for this video)
